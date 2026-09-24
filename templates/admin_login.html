@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Admin kirish{% endblock %}
+{% block content %}
+  <div class="form-card narrow">
+    <h2>👨‍💻 Admin kirish</h2>
+    <form method="post">
+      <label>Login</label>
+      <input type="text" name="user">
+      <label>Parol</label>
+      <input type="password" name="pass">
+      <button type="submit" class="btn big">Kirish</button>
+    </form>
+  </div>
+{% endblock %}

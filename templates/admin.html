@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Admin panel{% endblock %}
+{% block content %}
+  <h2>👨‍💻 Admin panel</h2>
+  {% if items %}
+    <div class="table">
+      <div class="head">#</div><div class="head">E'lon</div><div class="head">Kanalga yuborilgan</div><div class="head">Amal</div>
+      {% for i in items %}
+        <div class="cell">{{ i.id }}</div>
+        <div class="cell">
+          <b>{{ i.title or '(matn)' }}</b>
+          {% if i.price %} • {{ i.price }}{% endif %}
+          <span class="time">{{ i.created_at }}</span>
+        </div>
+        <div class="cell">{{ i.username or i.phone or '-' }}</div>
+        <div class="cell">
+          <form method="post" action="/admin/delete/{{ i.id }}" onsubmit="return confirm('O\'chirilsinmi?')">
+            <button class="btn danger">🗑 O'chirish</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">Hali hech qanday e'lon yo'q.</div>
+  {% endif %}
+{% endblock %}

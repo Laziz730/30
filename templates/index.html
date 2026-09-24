@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}E'lonlar — Uzef Pageshop{% endblock %}
+{% block content %}
+  <div class="cats">
+    <a href="/" class="{{ '' if not cat else '' }}">Barchasi</a>
+    {% for c in categories %}
+      <a href="/?cat={{ c }}" class="{{ 'active' if cat == c else '' }}">{{ c }}</a>
+    {% endfor %}
+  </div>
+
+  {% if items %}
+    <div class="grid">
+      {% for i in items %}
+        <div class="card">
+          {% if i.photo %}
+            <img src="/{{ i.photo }}" alt="" loading="lazy">
+          {% endif %}
+          <div class="card-body">
+            {% if i.price %}<div class="price">💰 {{ i.price }}</div>{% endif %}
+            {% if i.title %}<h3>{{ i.title }}</h3>{% endif %}
+            {% if i.category %}<span class="cat">{{ i.category }}</span>{% endif %}
+            {% for line in (i.text or '').split('\n') %}
+              {% if line %}<p>{{ line }}</p>{% endif %}
+            {% endfor %}
+            <div class="meta">
+              {% if i.phone %}☎️ {{ i.phone }}{% endif %}
+              {% if i.username %}👤 {{ i.username }}{% endif %}
+              <span class="time">{{ i.created_at }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">Hozircha e'lonlar yo'q. Birinchi bo'lib e'lon bering!</div>
+  {% endif %}
+{% endblock %}

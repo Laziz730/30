@@ -1,7 +1,4 @@
 import os
-import threading
-import time
-import urllib.request
 
 import telebot
 from telebot import types
@@ -11,7 +8,6 @@ import poster
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8946505099:AAF0ZCplo8whTLBZLEmRm39cE2UgabFqo1o")
 CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME", "@uzefpageshop")
 WEB_URL = os.getenv("WEB_URL", "").rstrip("/")
-PORT = int(os.getenv("PORT", 8000))
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -25,11 +21,10 @@ def get_main_keyboard():
     btn_rules = types.KeyboardButton("📚 Qoidalar")
     btn_prices = types.KeyboardButton("💰 Elon narxlari")
 
-    # Tugmalarni qatorlarga joylashtirish
-    markup.add(btn_search)           # to'liq kenglikdagi tugma
-    markup.add(btn_add, btn_my)      # yonma-yon 2 ta
-    markup.add(btn_admin, btn_rules) # yonma-yon 2 ta
-    markup.add(btn_prices)           # to'liq kenglikdagi tugma
+    markup.add(btn_search)
+    markup.add(btn_add, btn_my)
+    markup.add(btn_admin, btn_rules)
+    markup.add(btn_prices)
     return markup
 
 
@@ -46,7 +41,7 @@ def start_message(message):
     bot.send_message(message.chat.id, text, reply_markup=get_main_keyboard())
     if WEB_URL:
         web_kb = types.InlineKeyboardMarkup()
-        web_kb.add(types.InlineKeyboardButton("🌐 Saytda e'lon berish", web_app=types.WebAppInfo(WEB_URL)))
+        web_kb.add(types.InlineKeyboardButton("🌐 Saytda e'lon berish", url=WEB_URL + "/post"))
         bot.send_message(message.chat.id, "Sayt orqali ham e'lon bera olasiz:", reply_markup=web_kb)
 
 
@@ -65,7 +60,6 @@ def handle_ad(message):
     elif message.text == "💰 Elon narxlari":
         bot.send_message(message.chat.id, "💰 E'lon berish narxlari ro'yxati...")
     else:
-        # Oddiy e'lon kelganda kanalga joylash kodi
         user = message.from_user
         username = f"@{user.username}" if user.username else user.first_name
 
@@ -81,30 +75,6 @@ def handle_ad(message):
         except Exception as e:
             bot.send_message(message.chat.id, f"❌ Xato: {e}", reply_markup=get_main_keyboard())
 
-
-# ---------- keep-alive ----------
-
-def keep_alive():
-    # Har 5 daqiqada o'zini uyg'otib turadi (Render bekor uxlatmasligi uchun)
-    while True:
-        time.sleep(300)
-        if WEB_URL:
-            try:
-                urllib.request.urlopen(WEB_URL + "/health", timeout=10)
-            except Exception:
-                pass
-
-
-def run_bot():
-    print("Bot ishlamoqda...")
-    bot.polling(none_stop=True)
-
-
-if __name__ == "__main__":
-    # Web service (Flask) — sayt + /health
-    from webapp import app
-
-    threading.Thread(target=keep_alive, daemon=True).start()
-    threading.Thread(target=run_bot, daemon=True).start()
-    print(f"Web service: http://localhost:{PORT}")
-    app.run(host="0.0.0.0", port=PORT)
+def process_update(update_json):
+    update = telebot.types.Update.de_json(update_json)
+    bot.process_new_updates([update])

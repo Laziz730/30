@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}E'lon berish{% endblock %}
+{% block content %}
+  <div class="form-card">
+    <h2>➕ E'lon berish</h2>
+    <p>Formani to'ldiring — e'lon kanalga joylanadi va saytda ko'rinadi.</p>
+    <form method="post" enctype="multipart/form-data">
+      <label>Sarlavha</label>
+      <input type="text" name="title" placeholder="Masalan: iPhone 13 sotaman">
+
+      <label>Kategoriya</label>
+      <select name="category">
+        {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+      </select>
+
+      <label>Narx</label>
+      <input type="text" name="price" placeholder="Masalan: 5 000 000 so'm">
+
+      <label>Telefon raqam</label>
+      <input type="text" name="phone" placeholder="+998 90 123 45 67">
+
+      <label>Ismingiz (ixtiyoriy)</label>
+      <input type="text" name="username" placeholder="Ism yoki @username">
+
+      <label>E'lon matni</label>
+      <textarea name="text" rows="5" placeholder="E'lon haqida batafsil..."></textarea>
+
+      <label>Rasm (ixtiyoriy)</label>
+      <input type="file" name="photo" accept="image/*">
+
+      <button type="submit" class="btn big">📤 Kanalga joylash</button>
+    </form>
+  </div>
+{% endblock %}
